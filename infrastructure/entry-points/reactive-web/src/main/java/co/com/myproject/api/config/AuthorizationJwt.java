@@ -62,6 +62,8 @@ public class AuthorizationJwt implements WebFluxConfigurer {
                 .authorizeExchange(authorize -> authorize
                         .pathMatchers(HttpMethod.POST, "/api/v1/usuarios").permitAll()
                         .pathMatchers(HttpMethod.GET, "/api/v1/hello").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
                         .anyExchange().authenticated())
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwtSpec ->
