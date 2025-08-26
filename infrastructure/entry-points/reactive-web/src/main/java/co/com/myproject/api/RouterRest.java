@@ -45,9 +45,9 @@ public class RouterRest {
                     produces = {MediaType.APPLICATION_JSON_VALUE},
                     method = RequestMethod.POST,
                     beanClass = AuthenticationApiHandler.class,
-                    beanMethod = "listenRegisterUserUseCase",
+                    beanMethod = "listenRegisterUser",
                     operation = @Operation(
-                            operationId = "listenRegisterUserUseCase",
+                            operationId = "listenRegisterUser",
                             summary = "Register a new user to the system",
                             tags = {"Authenticate User"},
                             requestBody = @RequestBody(
