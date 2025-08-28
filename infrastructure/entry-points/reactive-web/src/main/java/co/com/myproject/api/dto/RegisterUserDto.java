@@ -1,12 +1,13 @@
 package co.com.myproject.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Schema(description = "Request object for a loan application")
+@Schema(description = "Request object for register new user")
 public record RegisterUserDto(
         @Schema(description = "User first name", example = "Andres David")
         @NotBlank(message = "First name cannot be null or empty")
@@ -20,8 +21,9 @@ public record RegisterUserDto(
         @NotBlank(message = "ID card cannot be null or empty")
         String idCard,
 
-        @Schema(description = "User date of birth", example = "17/07/1994")
+        @Schema(description = "User date of birth", example = "1994-07-17")
         @Past(message = "Date of birth must be in the past")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
         LocalDate dateOfBirth,
 
         @Schema(description = "User address", example = "Siempre Viva Avenue")

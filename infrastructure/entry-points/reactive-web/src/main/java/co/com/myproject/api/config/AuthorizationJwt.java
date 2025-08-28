@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
+/*
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -21,6 +22,8 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.ReactiveJwtAuthenticationConverterAdapter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+
+ */
 import org.springframework.web.reactive.config.WebFluxConfigurer;
 import reactor.core.publisher.Mono;
 
@@ -33,11 +36,11 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @Configuration
-@EnableWebFluxSecurity
-@EnableReactiveMethodSecurity
-public class AuthorizationJwt implements WebFluxConfigurer {
+//@EnableWebFluxSecurity
+//@EnableReactiveMethodSecurity
+public class AuthorizationJwt /*implements WebFluxConfigurer */{
 
-    private final String issuerUri;
+    /*private final String issuerUri;
     private final String clientId;
     private final String jsonExpRoles;
 
@@ -111,5 +114,5 @@ public class AuthorizationJwt implements WebFluxConfigurer {
             log.error(e.getMessage());
             return roles;
         }
-    }
+    }*/
 }

@@ -1,9 +1,12 @@
 package co.com.myproject.api;
 
 import co.com.myproject.api.dto.RegisterUserDto;
+import co.com.myproject.api.dto.ResponseFindIdCardDto;
 import co.com.myproject.api.exception.GlobalErrorHandler;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,12 +39,12 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
         }
 )
 public class RouterRest {
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationApiHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(RouterRest.class);
 
     @Bean
     @RouterOperations({
             @RouterOperation(
-                    path = "/api/v1/solicitud",
+                    path = "/api/v1/usuarios",
                     produces = {MediaType.APPLICATION_JSON_VALUE},
                     method = RequestMethod.POST,
                     beanClass = AuthenticationApiHandler.class,
@@ -49,7 +52,7 @@ public class RouterRest {
                     operation = @Operation(
                             operationId = "listenRegisterUser",
                             summary = "Register a new user to the system",
-                            tags = {"Authenticate User"},
+                            tags = {"Register a new user"},
                             requestBody = @RequestBody(
                                     required = true,
                                     content = @Content(
@@ -70,6 +73,40 @@ public class RouterRest {
                                     )
                             }
                     )
+            ),
+            @RouterOperation(
+                    path = "/api/v1/usuarios/{idCard}",
+                    produces = {MediaType.APPLICATION_JSON_VALUE},
+                    method = RequestMethod.GET,
+                    beanClass = AuthenticationApiHandler.class,
+                    beanMethod = "listenGetByIdCardEndpoint",
+                    operation = @Operation(
+                            operationId = "listenGetByIdCardEndpoint",
+                            summary = "Find a user by id card to the system",
+                            tags = {"Find user by id card"},
+                            parameters = {
+                                    @Parameter(
+                                            name = "idCard",
+                                            in = ParameterIn.PATH,
+                                            description = "ID card of the user to retrieve",
+                                            required = true,
+                                            example = "1234567890"
+                                    )
+                            },
+                            responses = {
+                                    @ApiResponse(
+                                            responseCode = "200",
+                                            description = "User found successfully",
+                                            content = @Content(
+                                                    schema = @Schema(implementation = ResponseFindIdCardDto.class)
+                                            )
+                                    ),
+                                    @ApiResponse(
+                                            responseCode = "400",
+                                            description = "Invalid request payload"
+                                    )
+                            }
+                    )
             )
     })
     public RouterFunction<ServerResponse> routerFunction(AuthenticationApiHandler handler, GlobalErrorHandler globalErrorHandler) {
@@ -78,12 +115,13 @@ public class RouterRest {
                 .POST("/api/v1/usuarios", handler::listenRegisterUser)
                 .GET("/api/v1/hello", handler::listenHelloEndpoint)
                 .GET("/api/v1/usuarios/update", handler::listenUpdateUser)
+                .GET("/api/v1/usuarios/{idCard}", handler::listenGetByIdCardEndpoint)
                 .build()
                 .filter((request, next) ->
                         next.handle(request)
                                 .onErrorResume(error -> {
                                     logger.error(error.getMessage());
-                                    return globalErrorHandler.handleError(error, request);
+                                    return globalErrorHandler.handleError(error);
                                 })
                 );
     }

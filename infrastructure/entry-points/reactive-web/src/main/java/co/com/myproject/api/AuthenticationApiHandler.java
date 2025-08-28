@@ -2,6 +2,7 @@ package co.com.myproject.api;
 
 import co.com.myproject.api.dto.RegisterUserDto;
 import co.com.myproject.api.mapper.UserMapper;
+import co.com.myproject.usecase.finduserbyid.FindUserByIdCardUseCase;
 import co.com.myproject.usecase.registerUser.RegisterUserUseCase;
 import co.com.myproject.usecase.updateUser.UpdateUserUseCase;
 import jakarta.validation.ConstraintViolation;
@@ -25,27 +26,21 @@ import java.util.stream.Collectors;
 public class AuthenticationApiHandler {
     private final RegisterUserUseCase registerUserUseCase;
     private final UpdateUserUseCase updateUserUseCase;
+    private final FindUserByIdCardUseCase findUserByIdCardUseCase;
     private final UserMapper userMapper;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationApiHandler.class);
+    private String errorMessage = "";
 
     public Mono<ServerResponse> listenRegisterUser(ServerRequest serverRequest) {
         logger.info("Enter a new request to register a user.");
         return serverRequest.bodyToMono(RegisterUserDto.class)
                 .doOnNext(dto -> logger.info("Request body deserialized successfully: {}", dto))
                 .flatMap(dto -> {
-                    // Realizamos la validación manual aquí
-                    logger.debug("Validating RegisterUserDto: {}", dto);
-                    Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
-                    if (!violations.isEmpty()) {
-                        // Si hay errores, devolvemos un error 400 con los detalles
-                        String errorMessage = violations.stream()
-                                .map(ConstraintViolation::getMessage)
-                                .collect(Collectors.joining(", "));
-                        logger.warn("Validation failed: {}", errorMessage);
+                    if (!isValidRequest(dto)) {
                         return ServerResponse
                                 .badRequest()
-                                .bodyValue("Validations failed: " + errorMessage);
+                                .bodyValue("Validations failed: " + this.errorMessage);
                     }
 
                     logger.info("Init validation passed.");
@@ -66,11 +61,35 @@ public class AuthenticationApiHandler {
                 });
     }
 
+    public Mono<ServerResponse> listenGetByIdCardEndpoint(ServerRequest serverRequest) {
+        logger.info("Enter a new request to find user by id card.");
+        String idCard = serverRequest.pathVariable("idCard");
+        return findUserByIdCardUseCase.findUserByIdCard(idCard)
+                .map(userMapper::toFindByIdResponseDto)
+                .flatMap(user -> ServerResponse.ok().bodyValue(user))
+                .switchIfEmpty(ServerResponse.notFound().build());
+    }
+
     public Mono<ServerResponse> listenUpdateUser(ServerRequest serverRequest) {
         return ServerResponse.ok().bodyValue("TODO: Pending implementation");
     }
 
     public Mono<ServerResponse> listenHelloEndpoint(ServerRequest serverRequest) {
         return ServerResponse.ok().bodyValue("HELLO");
+    }
+
+    private boolean isValidRequest(RegisterUserDto dto) {
+        // Realizamos la validación del request aquí
+        logger.debug("Validating RegisterUserDto: {}", dto);
+        Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
+        if (!violations.isEmpty()) {
+            // Si hay errores, devolvemos un error 400 con los detalles
+            this.errorMessage = violations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.joining(", "));
+            logger.warn("Validation failed: {}", this.errorMessage);
+            return false;
+        }
+        return true;
     }
 }

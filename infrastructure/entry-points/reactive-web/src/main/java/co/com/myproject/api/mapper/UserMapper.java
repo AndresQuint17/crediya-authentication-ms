@@ -1,6 +1,7 @@
 package co.com.myproject.api.mapper;
 
 import co.com.myproject.api.dto.RegisterUserDto;
+import co.com.myproject.api.dto.ResponseFindIdCardDto;
 import co.com.myproject.model.user.User;
 import org.mapstruct.Mapper;
 
@@ -8,4 +9,5 @@ import org.mapstruct.Mapper;
 public interface UserMapper {
     User toModel(RegisterUserDto dto);
     RegisterUserDto toDto(User entity);
+    ResponseFindIdCardDto toFindByIdResponseDto(User entity);
 }
