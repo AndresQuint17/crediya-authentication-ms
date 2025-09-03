@@ -112,9 +112,8 @@ public class RouterRest {
     public RouterFunction<ServerResponse> routerFunction(AuthenticationApiHandler handler, GlobalErrorHandler globalErrorHandler) {
 
         return RouterFunctions.route()
+                .POST("/api/v1/login", handler::listenLogin)
                 .POST("/api/v1/usuarios", handler::listenRegisterUser)
-                .GET("/api/v1/hello", handler::listenHelloEndpoint)
-                .GET("/api/v1/usuarios/update", handler::listenUpdateUser)
                 .GET("/api/v1/usuarios/{idCard}", handler::listenGetByIdCardEndpoint)
                 .build()
                 .filter((request, next) ->

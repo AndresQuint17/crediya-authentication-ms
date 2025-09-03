@@ -4,8 +4,8 @@ import co.com.myproject.api.mapper.UserMapper;
 import co.com.myproject.api.dto.RegisterUserDto;
 import co.com.myproject.model.user.User;
 import co.com.myproject.usecase.finduserbyid.FindUserByIdCardUseCase;
+import co.com.myproject.usecase.login.LoginUseCase;
 import co.com.myproject.usecase.registerUser.RegisterUserUseCase;
-import co.com.myproject.usecase.updateUser.UpdateUserUseCase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -30,6 +30,7 @@ import static org.mockito.Mockito.*;
 class AuthenticationApiHandlerTest {
 
     private RegisterUserUseCase registerUserUseCase;
+    private LoginUseCase loginUseCase;
     private UserMapper userMapper;
     private AuthenticationApiHandler handler;
     private FindUserByIdCardUseCase findUserByIdCardUseCase;
@@ -37,9 +38,10 @@ class AuthenticationApiHandlerTest {
     @BeforeEach
     void setUp() {
         registerUserUseCase = mock(RegisterUserUseCase.class);
-        UpdateUserUseCase updateUserUseCase = mock(UpdateUserUseCase.class);
         userMapper = mock(UserMapper.class);
-        handler = new AuthenticationApiHandler(registerUserUseCase, updateUserUseCase, findUserByIdCardUseCase, userMapper);
+        loginUseCase = mock(LoginUseCase.class);
+        findUserByIdCardUseCase = mock(FindUserByIdCardUseCase.class);
+        handler = new AuthenticationApiHandler(registerUserUseCase, findUserByIdCardUseCase, loginUseCase, userMapper);
     }
 
     private RegisterUserDto buildValidDto() {
@@ -144,35 +146,4 @@ class AuthenticationApiHandlerTest {
         verifyNoInteractions(registerUserUseCase);
     }
 
-    @Test
-    void listenHelloEndpoint_ShouldReturnHello() {
-        // given
-        ServerRequest request = mock(ServerRequest.class);
-
-        // when
-        Mono<ServerResponse> responseMono = handler.listenHelloEndpoint(request);
-
-        // then
-        StepVerifier.create(responseMono)
-                .assertNext(response -> {
-                    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-                })
-                .verifyComplete();
-    }
-
-    @Test
-    void listenUpdateUser_ShouldReturnTodoMessage() {
-        // given
-        ServerRequest request = mock(ServerRequest.class);
-
-        // when
-        Mono<ServerResponse> responseMono = handler.listenUpdateUser(request);
-
-        // then
-        StepVerifier.create(responseMono)
-                .assertNext(response -> {
-                    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
-                })
-                .verifyComplete();
-    }
 }

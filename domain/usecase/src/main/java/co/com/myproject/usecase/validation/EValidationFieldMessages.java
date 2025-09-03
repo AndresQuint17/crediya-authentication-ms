@@ -11,7 +11,8 @@ public enum EValidationFieldMessages {
     BASE_SALARY_REQUIRED("Base salary cannot be null", 400),
     BASE_SALARY_MIN("Base salary must be greater than or equal to 0", 400),
     BASE_SALARY_MAX("Base salary must be less than or equal to 15000000", 400),
-    USER_DOES_NOT_EXIST("User does not exits", 404);
+    USER_DOES_NOT_EXIST("User does not exits", 404),
+    ROLE_DOES_NOT_EXIST("User does not have a role assigned", 404);
 
     private final String message;
     private final int statusCode;

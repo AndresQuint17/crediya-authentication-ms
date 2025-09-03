@@ -23,10 +23,10 @@ import static org.mockito.Mockito.when;
 class MyReactiveRepositoryAdapterTest {
 
     @InjectMocks
-    MyReactiveRepositoryAdapter repositoryAdapter;
+    UserReactiveRepositoryAdapter repositoryAdapter;
 
     @Mock
-    MyReactiveRepository repository;
+    UserReactiveRepository repository;
 
     @Mock
     ObjectMapper mapper;
@@ -34,7 +34,7 @@ class MyReactiveRepositoryAdapterTest {
     @BeforeEach
     void setUp() {
         // El adapter necesita el mapper y el repo real en el constructor
-        repositoryAdapter = new MyReactiveRepositoryAdapter(repository, mapper);
+        repositoryAdapter = new UserReactiveRepositoryAdapter(repository, mapper);
     }
 
     private UserEntity buildEntity() {

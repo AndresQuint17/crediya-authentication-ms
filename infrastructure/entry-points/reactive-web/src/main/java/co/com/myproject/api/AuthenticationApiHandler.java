@@ -1,10 +1,11 @@
 package co.com.myproject.api;
 
+import co.com.myproject.api.dto.LoginDto;
 import co.com.myproject.api.dto.RegisterUserDto;
 import co.com.myproject.api.mapper.UserMapper;
 import co.com.myproject.usecase.finduserbyid.FindUserByIdCardUseCase;
+import co.com.myproject.usecase.login.LoginUseCase;
 import co.com.myproject.usecase.registerUser.RegisterUserUseCase;
-import co.com.myproject.usecase.updateUser.UpdateUserUseCase;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -25,13 +27,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthenticationApiHandler {
     private final RegisterUserUseCase registerUserUseCase;
-    private final UpdateUserUseCase updateUserUseCase;
     private final FindUserByIdCardUseCase findUserByIdCardUseCase;
+    private final LoginUseCase loginUseCase;
     private final UserMapper userMapper;
     private final Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationApiHandler.class);
     private String errorMessage = "";
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'ASESOR')")
     public Mono<ServerResponse> listenRegisterUser(ServerRequest serverRequest) {
         logger.info("Enter a new request to register a user.");
         return serverRequest.bodyToMono(RegisterUserDto.class)
@@ -61,21 +64,36 @@ public class AuthenticationApiHandler {
                 });
     }
 
+    //@PreAuthorize("hasAuthority('CLIENTE')") proteger metodo por authority
+    //@PreAuthorize("hasAnyAuthority('CLIENTE', 'ADMIN')") proteger metodo por grupo de authorities
+    @PreAuthorize("hasRole('CLIENTE')")
     public Mono<ServerResponse> listenGetByIdCardEndpoint(ServerRequest serverRequest) {
         logger.info("Enter a new request to find user by id card.");
         String idCard = serverRequest.pathVariable("idCard");
         return findUserByIdCardUseCase.findUserByIdCard(idCard)
                 .map(userMapper::toFindByIdResponseDto)
-                .flatMap(user -> ServerResponse.ok().bodyValue(user))
+                .flatMap(user -> {
+                    logger.info("✅ Find user by id card use case execution completed.");
+                    return ServerResponse.ok().bodyValue(user);
+                })
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> listenUpdateUser(ServerRequest serverRequest) {
-        return ServerResponse.ok().bodyValue("TODO: Pending implementation");
-    }
+    public Mono<ServerResponse> listenLogin(ServerRequest serverRequest) {
+        logger.info("Enter a new request to login use case.");
+        return serverRequest.bodyToMono(LoginDto.class)
+                .doOnNext(dto -> logger.debug("🔍 Cuerpo deserializado correctamente: " + dto))
+                .flatMap(dto -> {
+                            logger.debug("🔍 Llamando al caso de uso de autenticación...");
 
-    public Mono<ServerResponse> listenHelloEndpoint(ServerRequest serverRequest) {
-        return ServerResponse.ok().bodyValue("HELLO");
+                        return loginUseCase.authenticate(dto.email(), dto.password())
+                                .flatMap(token -> {
+                                    logger.info("✅ Login use case execution completed.");
+                                    return ServerResponse.ok().bodyValue(token);
+                                });
+                })
+                .doOnError(error -> logger.error("❌ Error en el flujo: " + error.getMessage()))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     private boolean isValidRequest(RegisterUserDto dto) {
