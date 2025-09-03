@@ -25,7 +25,6 @@ class UpdateUserUseCaseTest {
 
     @Test
     void shouldUpdateUser() {
-        // Arrange
         User user = User.builder()
                 .firstName("Andres David")
                 .lastName("Quintero Caicedo")
@@ -39,7 +38,6 @@ class UpdateUserUseCaseTest {
 
         when(userRepository.updateUser(user)).thenReturn(Mono.just(user));
 
-        // Act & Assert
         StepVerifier.create(updateUserUseCase.updateUser(user))
                 .expectNext(user)
                 .verifyComplete();

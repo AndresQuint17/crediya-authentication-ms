@@ -18,26 +18,24 @@ public class LoginUseCase {
 
     public Mono<TokenDto> authenticate(String email, String password) {
         return userRepository.findByEmail(email)
-                .switchIfEmpty(Mono.defer(() -> {
-                    return Mono.error(new UserDoesNotExistException(
-                            EValidationFieldMessages.USER_DOES_NOT_EXIST.getStatusCode(),
-                            EValidationFieldMessages.USER_DOES_NOT_EXIST.getMessage()));
-                }))
+                .switchIfEmpty(Mono.error(new UserDoesNotExistException(
+                        EValidationFieldMessages.USER_DOES_NOT_EXIST.getStatusCode(),
+                        EValidationFieldMessages.USER_DOES_NOT_EXIST.getMessage()
+                )))
                 .flatMap(user -> userRepository.getUserRole(user.getEmail())
-                        .flatMap(roleId -> {
-                            if (roleId == null) {
-                                return Mono.error(new RoleDoesNotExistException(
-                                        EValidationFieldMessages.ROLE_DOES_NOT_EXIST.getStatusCode(),
-                                        EValidationFieldMessages.ROLE_DOES_NOT_EXIST.getMessage()
-                                ));
-                            }
-                            return roleRepository.getUserRoleNameByIdRol(roleId)
-                                    .flatMap(role ->
-                                            userRepository.getUserCredentials(user.getIdCard())
-                                                    .flatMap(userCredentials -> authRepository.login(user.getIdCard(), password, userCredentials, role.getName())
-                                                    )
-                                    );
-                        })
+                        .switchIfEmpty(Mono.error(new RoleDoesNotExistException(
+                                EValidationFieldMessages.ROLE_DOES_NOT_EXIST.getStatusCode(),
+                                EValidationFieldMessages.ROLE_DOES_NOT_EXIST.getMessage())))
+                        .flatMap(roleId -> roleRepository.getUserRoleNameByIdRol(roleId)
+                                .flatMap(role -> userRepository.getUserCredentials(user.getIdCard())
+                                        .flatMap(userCredentials -> authRepository.login(
+                                                user.getIdCard(),
+                                                password,
+                                                userCredentials,
+                                                role.getName()
+                                        ))
+                                )
+                        )
                 );
     }
 }
