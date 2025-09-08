@@ -42,6 +42,11 @@ public record RegisterUserDto(
         @NotNull(message = "Base salary cannot be null")
         @DecimalMin(value = "0.0", inclusive = true, message = "Base salary must be greater than or equal to 0")
         @DecimalMax(value = "15000000.0", message = "Base salary must be less than or equal to 15000000")
-        BigDecimal baseSalary
+        BigDecimal baseSalary,
+
+        @Schema(description = "User role", example = "3")
+        @Positive(message = "Role id must be a positive number")
+        @NotNull(message = "Role id cannot be null")
+        Long roleId
 ) {
 }

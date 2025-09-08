@@ -1,5 +1,6 @@
 package co.com.myproject.usecase.registerUser;
 
+import co.com.myproject.model.role.gateways.RoleRepository;
 import co.com.myproject.model.user.User;
 import co.com.myproject.model.user.gateways.UserRepository;
 import co.com.myproject.usecase.exceptions.UserEmailAlreadyExistsException;
@@ -18,12 +19,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RegisterUserUseCaseTest {
     private UserRepository userRepository;
+    private RoleRepository roleRepository;
     private RegisterUserUseCase registerUserUseCase;
 
     @BeforeEach
     void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
-        registerUserUseCase = new RegisterUserUseCase(userRepository);
+        registerUserUseCase = new RegisterUserUseCase(userRepository, roleRepository);
     }
 
     private User buildSampleUser() {

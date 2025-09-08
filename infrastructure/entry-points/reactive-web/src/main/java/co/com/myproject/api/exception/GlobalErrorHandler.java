@@ -3,6 +3,7 @@ package co.com.myproject.api.exception;
 import co.com.myproject.model.exceptions.RoleDoesNotExistException;
 import co.com.myproject.usecase.exceptions.UserDoesNotExistException;
 import co.com.myproject.usecase.exceptions.UserEmailAlreadyExistsException;
+import co.com.myproject.usecase.exceptions.UserRoleNotFoundException;
 import org.springframework.core.codec.DecodingException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.dao.DuplicateKeyException;
@@ -50,6 +51,15 @@ public class GlobalErrorHandler {
                     .bodyValue(Map.of(
                             "error", BUSINESS_VALIDATION_ERROR,
                             "status", ((UserDoesNotExistException) throwable).getStatus(),
+                            "message", throwable.getMessage()
+                    ));
+        }
+        // User does not exist
+        if (throwable instanceof UserRoleNotFoundException) {
+            return ServerResponse.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(Map.of(
+                            "error", BUSINESS_VALIDATION_ERROR,
                             "message", throwable.getMessage()
                     ));
         }

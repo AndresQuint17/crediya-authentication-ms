@@ -23,4 +23,11 @@ public class RoleReactiveRepositoryAdapter extends ReactiveAdapterOperations<
     public Mono<Role> getUserRoleNameByIdRol(Long idRol) {
         return super.findById(idRol);
     }
+
+    @Override
+    public Mono<Boolean> isRoleExisting(Long idRol) {
+        return super.findById(idRol)
+                .map(role -> true)
+                .defaultIfEmpty(false);
+    }
 }

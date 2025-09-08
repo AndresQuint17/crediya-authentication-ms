@@ -5,4 +5,5 @@ import reactor.core.publisher.Mono;
 
 public interface RoleRepository {
     Mono<Role> getUserRoleNameByIdRol(Long idRol);
+    Mono<Boolean> isRoleExisting(Long idRol);
 }
