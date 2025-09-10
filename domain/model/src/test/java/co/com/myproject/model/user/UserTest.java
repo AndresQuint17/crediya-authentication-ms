@@ -41,7 +41,8 @@ class UserTest {
                 "Av Siempre Viva 742",
                 "3109876543",
                 "ana@example.com",
-                BigDecimal.valueOf(8000)
+                BigDecimal.valueOf(8000),
+                1L
         );
 
         assertEquals("Ana", user.getFirstName());

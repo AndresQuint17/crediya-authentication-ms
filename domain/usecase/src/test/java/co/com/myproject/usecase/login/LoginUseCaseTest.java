@@ -45,7 +45,7 @@ class LoginUseCaseTest {
 
         User user = new User("Joe", "Doe",
                 idCard, null, "KR 154", "3215487954",
-                "john@example.com", new BigDecimal(1442154));
+                "john@example.com", new BigDecimal(1442154), 1L);
         String credentials = "hashedPwd";
         Role role = new Role(roleName, roleDescription);
         TokenDto tokenDto = new TokenDto("jwt-token");
@@ -83,7 +83,7 @@ class LoginUseCaseTest {
 
         User user = new User("Joe", "Doe",
                 idCard, null, "KR 154", "3215487954",
-                email, new BigDecimal(1442154));
+                email, new BigDecimal(1442154), 1L);
 
         when(userRepository.findByEmail(email)).thenReturn(Mono.just(user));
         when(userRepository.getUserRole(email)).thenReturn(Mono.empty()); // Simula rol vacío
@@ -108,7 +108,7 @@ class LoginUseCaseTest {
 
         User user = new User("Joe", "Doe",
                 idCard, null, "KR 154", "3215487954",
-                "john@example.com", new BigDecimal(1442154));
+                "john@example.com", new BigDecimal(1442154), 1L);
         String credentials = "hashedPwd";
         Role role = new Role(roleName, roleDescription);
 

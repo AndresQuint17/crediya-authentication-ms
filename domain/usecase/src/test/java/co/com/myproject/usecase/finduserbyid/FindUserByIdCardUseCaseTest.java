@@ -32,7 +32,7 @@ class FindUserByIdCardUseCaseTest {
         String idCard = "123456789";
         User expectedUser = new User("Joe", "Doe",
                 idCard, null, "KR 154", "3215487954",
-                "joedoe@email.com", new BigDecimal(1442154));
+                "joedoe@email.com", new BigDecimal(1442154), 1L);
 
         Mockito.when(userRepository.findByIdCard(idCard))
                 .thenReturn(Mono.just(expectedUser));

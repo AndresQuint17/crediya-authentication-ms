@@ -25,6 +25,7 @@ class RegisterUserUseCaseTest {
     @BeforeEach
     void setUp() {
         userRepository = Mockito.mock(UserRepository.class);
+        roleRepository = Mockito.mock(RoleRepository.class);
         registerUserUseCase = new RegisterUserUseCase(userRepository, roleRepository);
     }
 
@@ -38,6 +39,7 @@ class RegisterUserUseCaseTest {
                 .phone("3001234567")
                 .email("carlos@example.com")
                 .baseSalary(BigDecimal.valueOf(7000))
+                .roleId(1L)
                 .build();
     }
 
@@ -71,6 +73,10 @@ class RegisterUserUseCaseTest {
         // Mock: si busca el email, no encuentra nada
         when(userRepository.findByEmail(eq(user.getEmail())))
                 .thenReturn(Mono.empty());
+
+        // Mock: si busca el email, no encuentra nada
+        when(roleRepository.isRoleExisting(eq(user.getRoleId())))
+                .thenReturn(Mono.just(true));
 
         // Mock: simula guardar y devolver el usuario
         when(userRepository.registerUser(any(User.class)))

@@ -12,7 +12,7 @@ class EValidationFieldMessagesTest {
     void testUserDoesNotExistEnumValues() {
         EValidationFieldMessages error = EValidationFieldMessages.USER_DOES_NOT_EXIST;
 
-        assertEquals("User does not exits", error.getMessage());
+        assertEquals("The user does not exist", error.getMessage());
         assertEquals(404, error.getStatusCode());
     }
 
@@ -28,7 +28,7 @@ class EValidationFieldMessagesTest {
     @Test
     @DisplayName("Should contain all expected enum values")
     void testEnumValuesCount() {
-        int expectedCount = 12; // Update if you add more enums
+        int expectedCount = 13; // Update if you add more enums
         assertEquals(expectedCount, EValidationFieldMessages.values().length);
     }
 

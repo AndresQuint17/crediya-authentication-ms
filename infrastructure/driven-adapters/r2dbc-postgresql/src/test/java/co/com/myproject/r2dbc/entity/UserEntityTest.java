@@ -49,7 +49,8 @@ class UserEntityTest {
                 "3001234567",
                 "john@test.com",
                 BigDecimal.valueOf(2000),
-                2L
+                2L,
+                "Secret"
         );
 
         assertEquals("John", user.getFirstName());

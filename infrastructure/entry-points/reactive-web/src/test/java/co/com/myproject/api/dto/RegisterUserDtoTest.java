@@ -31,7 +31,7 @@ class RegisterUserDtoTest {
                 "Siempre Viva Avenue",
                 "3015484104",
                 "andres@email.com",
-                BigDecimal.valueOf(4_500_000)
+                BigDecimal.valueOf(4_500_000),1L
         );
     }
 
@@ -54,7 +54,7 @@ class RegisterUserDtoTest {
                 "Siempre Viva Avenue",
                 "3015484104",
                 "andres@email.com",
-                BigDecimal.valueOf(4_500_000)
+                BigDecimal.valueOf(4_500_000), 1L
         );
 
         Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
@@ -74,7 +74,7 @@ class RegisterUserDtoTest {
                 "Siempre Viva Avenue",
                 "3015484104",
                 "andres@email.com",
-                BigDecimal.valueOf(4_500_000)
+                BigDecimal.valueOf(4_500_000), 1L
         );
 
         Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
@@ -95,7 +95,8 @@ class RegisterUserDtoTest {
                 dto.address(),
                 dto.phone(),
                 dto.email(),
-                dto.baseSalary()
+                dto.baseSalary(),
+                1L
         );
 
         Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
@@ -116,7 +117,8 @@ class RegisterUserDtoTest {
                 dto.address(),
                 dto.phone(),
                 dto.email(),
-                dto.baseSalary()
+                dto.baseSalary(),
+                1L
         );
 
         Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
@@ -137,7 +139,8 @@ class RegisterUserDtoTest {
                 dto.address(),
                 dto.phone(),
                 "invalid-email",
-                dto.baseSalary()
+                dto.baseSalary(),
+                1L
         );
 
         Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
@@ -158,7 +161,8 @@ class RegisterUserDtoTest {
                 dto.address(),
                 dto.phone(),
                 dto.email(),
-                BigDecimal.valueOf(-1000)
+                BigDecimal.valueOf(-1000),
+                1L
         );
 
         Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);
@@ -179,7 +183,8 @@ class RegisterUserDtoTest {
                 dto.address(),
                 dto.phone(),
                 dto.email(),
-                BigDecimal.valueOf(20_000_000)
+                BigDecimal.valueOf(20_000_000),
+                1L
         );
 
         Set<ConstraintViolation<RegisterUserDto>> violations = validator.validate(dto);

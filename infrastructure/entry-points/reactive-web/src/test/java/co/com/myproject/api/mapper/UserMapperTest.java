@@ -29,7 +29,7 @@ class UserMapperTest {
                 "Siempre Viva Avenue",
                 "+57 3015484104",
                 "andres.david.qc@email.com",
-                new BigDecimal("4500000.00")
+                new BigDecimal("4500000.00"), 1L
         );
 
         User user = mapper.toModel(dto);

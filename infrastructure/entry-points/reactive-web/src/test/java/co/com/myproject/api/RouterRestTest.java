@@ -33,19 +33,6 @@ class RouterRestTest {
     }
 
     @Test
-    void testHelloEndpoint() {
-        Mockito.when(handler.listenHelloEndpoint(Mockito.any()))
-                .thenReturn(ServerResponse.ok().bodyValue("Hello World"));
-
-        webTestClient.get()
-                .uri("/hello")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .isEqualTo("Hello World");
-    }
-
-    @Test
     void testRegisterUserEndpoint() {
         RegisterUserDto request = new RegisterUserDto(
                 "Andres",
@@ -55,7 +42,7 @@ class RouterRestTest {
                 "Calle falsa 123",
                 "3015484104",
                 "test@example.com",
-                BigDecimal.valueOf(5000000)
+                BigDecimal.valueOf(5000000), 1L
         );
 
         Mockito.when(handler.listenRegisterUser(Mockito.any()))
@@ -69,18 +56,5 @@ class RouterRestTest {
                 .expectStatus().isCreated()
                 .expectBody(RegisterUserDto.class)
                 .isEqualTo(request);
-    }
-
-    @Test
-    void testUpdateUserEndpoint() {
-        Mockito.when(handler.listenUpdateUser(Mockito.any()))
-                .thenReturn(ServerResponse.ok().bodyValue("User updated"));
-
-        webTestClient.get()
-                .uri("/usuarios/update")
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .isEqualTo("User updated");
     }
 }

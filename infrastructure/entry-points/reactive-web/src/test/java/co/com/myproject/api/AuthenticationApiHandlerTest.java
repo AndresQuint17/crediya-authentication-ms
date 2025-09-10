@@ -53,7 +53,7 @@ class AuthenticationApiHandlerTest {
                 "123 Main St",
                 "1234567890",
                 "john.doe@example.com",
-                BigDecimal.valueOf(1000)
+                BigDecimal.valueOf(1000), 1L
         );
     }
 
@@ -114,7 +114,7 @@ class AuthenticationApiHandlerTest {
                 "123 Main St",
                 "1234567890",
                 "invalid-email",
-                BigDecimal.valueOf(1000)
+                BigDecimal.valueOf(1000), 1L
         );
 
         // Serializamos el DTO a JSON para simular body real
