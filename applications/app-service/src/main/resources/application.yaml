@@ -22,6 +22,9 @@ spring:
           client-id: "myclientid"
 jwt:
   json-exp-roles: "/roles"
+  secret: MySecretK3y_MySecretK3y_MySecretK3y_MySecretK3y_
+  expiration: 86400000
+  #expiration: 60000
 management:
   endpoints:
     web:
@@ -35,12 +38,12 @@ cors:
   allowed-origins: "http://localhost:4200,http://localhost:8080"
 adapters:
   r2dbc:
-    host: "localhost"
-    port: 5432
-    database: "reto-pragma"
-    schema: "public"
-    username: "admin"
-    password: "passwordSQL"
+    host: ${ADAPTERS_R2DBC_HOST:localhost}
+    port: ${ADAPTERS_R2DBC_PORT:5432}
+    database: ${ADAPTERS_R2DBC_DATABASE:reto-pragma}
+    schema: ${ADAPTERS_R2DBC_SCHEMA:public}
+    username: ${ADAPTERS_R2DBC_USERNAME:admin}
+    password: ${ADAPTERS_R2DBC_PASSWORD:passwordSQL}
 logging:
   level:
     org.springframework.security: DEBUG

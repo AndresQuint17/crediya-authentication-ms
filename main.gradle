@@ -98,6 +98,8 @@ tasks.register('jacocoMergedReport', JacocoReport) {
         xml.setRequired true
         csv.setRequired false
         html.setRequired true
+        html.outputLocation.set(layout.buildDirectory.dir("reports/jacocoMerged"))
+        xml.outputLocation.set(layout.buildDirectory.file("reports/jacocoMerged/jacocoMerged.xml"))
     }
 }
 

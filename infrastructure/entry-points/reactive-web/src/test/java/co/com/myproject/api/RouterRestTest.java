@@ -1,60 +1,60 @@
 package co.com.myproject.api;
 
-import org.assertj.core.api.Assertions;
+import co.com.myproject.api.dto.RegisterUserDto;
+import co.com.myproject.api.exception.GlobalErrorHandler;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
+import org.mockito.Mockito;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
-@ContextConfiguration(classes = {RouterRest.class, Handler.class})
-@WebFluxTest
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 class RouterRestTest {
 
-    @Autowired
     private WebTestClient webTestClient;
+    private AuthenticationApiHandler handler;
+    private GlobalErrorHandler globalErrorHandler;
 
-    @Test
-    void testListenGETUseCase() {
-        webTestClient.get()
-                .uri("/api/usecase/path")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .value(userResponse -> {
-                            Assertions.assertThat(userResponse).isEmpty();
-                        }
-                );
+    @BeforeEach
+    void setUp() {
+        handler = Mockito.mock(AuthenticationApiHandler.class);
+        globalErrorHandler = new GlobalErrorHandler();
+
+        RouterRest routerRest = new RouterRest();
+        webTestClient = WebTestClient
+                .bindToRouterFunction(routerRest.routerFunction(handler, globalErrorHandler))
+                .configureClient()
+                .baseUrl("/api/v1")
+                .build();
     }
 
     @Test
-    void testListenGETOtherUseCase() {
-        webTestClient.get()
-                .uri("/api/otherusercase/path")
-                .accept(MediaType.APPLICATION_JSON)
-                .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .value(userResponse -> {
-                            Assertions.assertThat(userResponse).isEmpty();
-                        }
-                );
-    }
+    void testRegisterUserEndpoint() {
+        RegisterUserDto request = new RegisterUserDto(
+                "Andres",
+                "Quintero",
+                "123456789",
+                LocalDate.of(1990, 1, 1),
+                "Calle falsa 123",
+                "3015484104",
+                "test@example.com",
+                BigDecimal.valueOf(5000000), 1L
+        );
 
-    @Test
-    void testListenPOSTUseCase() {
+        Mockito.when(handler.listenRegisterUser(Mockito.any()))
+                .thenReturn(ServerResponse.created(null).bodyValue(request));
+
         webTestClient.post()
-                .uri("/api/usecase/otherpath")
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue("")
+                .uri("/usuarios")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Mono.just(request), RegisterUserDto.class)
                 .exchange()
-                .expectStatus().isOk()
-                .expectBody(String.class)
-                .value(userResponse -> {
-                            Assertions.assertThat(userResponse).isEmpty();
-                        }
-                );
+                .expectStatus().isCreated()
+                .expectBody(RegisterUserDto.class)
+                .isEqualTo(request);
     }
 }
