@@ -40,6 +40,7 @@ public class AuthorizationJwt implements WebFluxConfigurer {
                             .hasAnyRole("ADMIN", "ASESOR", "CLIENTE")
                         .pathMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                         .pathMatchers(HttpMethod.GET, "/v3/api-docs/**").permitAll()
+                        .pathMatchers("/actuator/health").permitAll()
                         .anyExchange().authenticated())
                 .addFilterAfter(jwtFilter, SecurityWebFiltersOrder.FIRST)
                 .securityContextRepository(securityContextRepository)
