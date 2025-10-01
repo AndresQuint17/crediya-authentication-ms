@@ -1,0 +1,17 @@
+services:
+  autenticacion-ms:
+    image: autenticacion-ms
+    ports:
+      - "8080:8080"
+    environment:
+      ADAPTERS_R2DBC_HOST: postgresql
+      ADAPTERS_R2DBC_PORT: 5432
+      ADAPTERS_R2DBC_DATABASE: reto-pragma
+      ADAPTERS_R2DBC_USERNAME: admin
+      ADAPTERS_R2DBC_PASSWORD: passwordSQL
+    networks:
+      - auth-net
+
+networks:
+  auth-net:
+    external: true
